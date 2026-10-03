@@ -7,6 +7,7 @@ Recorded 2026-10-03.
 | Swift Testing core suite | 10 tests passed, including 3 complete-draft export cases |
 | Portable protocol fixture | Swift matches the expected state for all 10 server mutation types |
 | Native app | Unsigned simulator build succeeded with Xcode 26.6 / Swift 6.3.3 |
+| Snapshot size budget | Full card/column/text limits serialize to 64,073,519 bytes before presence entries; below the 64 MiB receive cap |
 | Live XCTest | 1 offline/relaunch/server-confirmation journey passed on iPhone 17, iOS 26.5 |
 | Hosted CI | Configured; not run |
 | Physical device / signed release | Not tested |
@@ -20,5 +21,7 @@ The retained XCTest attachments are [the offline draft](images/ios-offline.png) 
 An initial test build mixed x86_64 app linking with an arm64 Swift package object. Debug now builds only the active architecture. The passing local test selected `ARCHS=arm64` on the Apple Silicon simulator. This was a build configuration correction, not a passing first attempt.
 
 The result bundle and build log stay in ignored `.build-output` storage. The committed screenshots and test source make the result inspectable without claiming remote CI, distribution, load testing, or physical-device validation.
+
+The snapshot-size check used JSON control characters at the server's maximum text lengths, 2,000 cards, and 100 columns. It verifies serialized size, not native memory use or decoding performance. The receive-cap change passed a generic simulator build after the live journey; that journey was not repeated for this message-size setting.
 
 The CI runner label follows [GitHub's macOS runner documentation](https://docs.github.com/en/actions/reference/runners/github-hosted-runners). CI performs core tests, generator consistency, and a simulator build. It does not start the paired backend or run the live UI journey.

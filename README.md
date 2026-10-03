@@ -64,7 +64,7 @@ Use a new result path for each run. The test creates a disposable board on the s
 
 This is a working portfolio prototype. Board links authorize edits. There are no accounts, permissions, push notifications, or text merging. The server applies conflicting edits in arrival order. Offline editing starts after a board's first successful load. Pending intents are capped at 500. Receipt retention, public-server quotas, deployment, and authentication remain server concerns.
 
-The journal is local plaintext app data. The app supports one window to keep one writer per board journal. Atomic writes run synchronously on the main actor; large boards would need an asynchronous storage design and measured performance work. VoiceOver and Dynamic Type use native controls, but a physical-device accessibility pass and signed distribution have not been completed.
+The journal is local plaintext app data. The app supports one window to keep one writer per board journal. WebSocket messages have a 64 MiB receive limit so valid large board payloads can load. Large-snapshot memory use and decoding performance have not been measured. Atomic writes run synchronously on the main actor; large boards would need an asynchronous storage design and measured performance work. VoiceOver and Dynamic Type use native controls, but a physical-device accessibility pass and signed distribution have not been completed.
 
 ## Layout
 

@@ -59,6 +59,9 @@ final class BoardSession {
         while !Task.isCancelled && !workOffline && !storageFailed && activeRun == lease {
             status = attempts == 0 ? "Connecting" : "Reconnecting"
             let connection = URLSession.shared.webSocketTask(with: settings.socketURL)
+            // Valid server boards can exceed Foundation's default 1 MiB cap.
+            // 64 MiB covers the board's entity/text caps with worst-case JSON escaping.
+            connection.maximumMessageSize = 64 * 1024 * 1024
             socket = connection
             ready = false
             connection.resume()

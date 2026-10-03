@@ -36,8 +36,10 @@ The app explicitly disables multiple windows. Atomic replacement prevents a part
 
 Every connection requests a full snapshot. Missing versions trigger another snapshot rather than applying operations over the wrong state. A receipt acknowledgement removes only its matching pending ID. Accepted broadcasts remove pending operations only when the server actor matches the saved client ID.
 
+Each WebSocket limits received messages to 64 MiB. Foundation defaults to 1 MiB, which is too small for some valid boards. A snapshot containing 2,000 cards and 100 columns, with maximum text lengths escaped as JSON control characters, uses 64,073,519 bytes before presence entries. The board payload fits within the 67,108,864-byte budget. Presence entries also count toward that message limit.
+
 ## Deliberate limits
 
 The server serializes edits by arrival order. It does not merge simultaneous text edits. A board link authorizes editing. The native UI exposes card create/edit/move; the reducer supports the broader server contract for incoming changes.
 
-The journal is plaintext app storage and has no migration/version layer yet. It uses synchronous file writes on the main actor. The outbox cap is 500 intents; receipts are retained by the server for the board lifetime. These choices keep the prototype's failure behavior understandable but need measured work before large deployments.
+The journal is plaintext app storage and has no migration/version layer yet. It uses synchronous file writes on the main actor. The outbox cap is 500 intents; receipts are retained by the server for the board lifetime. Large-snapshot memory use, decoding time, and storage performance have not been measured. These choices keep the prototype's failure behavior understandable but need measured work before large deployments.
