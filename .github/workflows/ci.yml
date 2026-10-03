@@ -1,0 +1,22 @@
+name: Swift validation
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  core-and-app:
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test the durable journal and protocol reducer
+        run: swift test
+      - name: Check the generated Xcode project
+        run: |
+          python3 scripts/project.py
+          git diff --exit-code -- Syncboard.xcodeproj
+      - name: Build the simulator app
+        run: >-
+          xcodebuild -project Syncboard.xcodeproj -scheme Syncboard
+          -destination 'generic/platform=iOS Simulator'
+          -derivedDataPath .build-output/xcode CODE_SIGNING_ALLOWED=NO build
